@@ -31,7 +31,12 @@ function scene:create(event)
     print("mapDir", properties.mapDir)
     local destDirt
 
-    local doc_path = system.pathForFile("mapy", properties.mapListBaseDir)
+    local doc_path
+    if properties.isDevice then
+        doc_path = system.pathForFile(nil, properties.mapListBaseDir)
+    else
+        doc_path = system.pathForFile("mapy/", properties.mapListBaseDir)
+    end
 
     for file in lfs.dir(doc_path) do
         -- file is the current file or directory name

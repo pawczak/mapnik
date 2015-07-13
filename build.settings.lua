@@ -12,4 +12,5 @@ settings =
             "android.permission.READ_EXTERNAL_STORAGE"
         },
     },
+    orientation = { supported = { "landscapeLeft", "landscapeRight", "portraitUpsideDown", "portrait" } }
 }
