@@ -7,7 +7,7 @@ local fileNam, sceneGroup
 -- scaling
 
 -- turn on multitouch
-system .activate("multitouch")
+system.activate("multitouch")
 
 -- which environment are we running on?
 local isDevice = properties.isDevice
@@ -167,6 +167,19 @@ local function createMapObj(mapFileName)
     print(tostring(mapFileName))
     local mapa = display.newImage(properties.mapDir .. "/" .. mapFileName)
     sceneGroup:insert(mapa)
+
+
+    local newWidthScale, newHeightScale = properties.width / mapa.contentWidth, properties.height / mapa.contentHeight
+    local newScale
+    if newHeightScale > newWidthScale then
+        newScale = newHeightScale
+    else
+        newScale = newWidthScale
+    end
+--    mapa.xScale, mapa.yScale = newScale, newScale
+    mapa.x, mapa.y = properties.center.x,properties.center.y
+
+
     -- keep a list of the tracking dots
     mapa.dots = {}
 
@@ -300,7 +313,7 @@ function scene:show(event)
 
     if (phase == "will") then
         createMapObj(fileName)
-        print("WILL".."aaa")
+        print("WILL" .. "aaa")
     elseif (phase == "did") then
         -- Called when the scene is still off screen (but is about to come on screen).
 

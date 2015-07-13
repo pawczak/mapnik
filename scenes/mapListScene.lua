@@ -28,7 +28,8 @@ function scene:create(event)
 
     listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
 
-    local doc_path = system.pathForFile(properties.mapDir, system.ResourceDirectory)
+    print("mapDir", properties.mapDir)
+    local doc_path = system.pathForFile(properties.mapDir, properties.documentsPath)
 
     for file in lfs.dir(doc_path) do
         -- file is the current file or directory name
@@ -63,8 +64,8 @@ function scene:create(event)
 
             print("release " .. maps[event.row.index])
             local options = {
---                effect = "fade",
---                time = 800,
+                --                effect = "fade",
+                --                time = 800,
                 params = { mapFileName = maps[event.row.index] }
             }
 

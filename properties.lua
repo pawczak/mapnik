@@ -31,12 +31,13 @@ properties.mainSceneName = "scenes.mainScene"
 properties.isDevice = (system.getInfo("environment") == "device")
 
 --file system
-properties.documentsPath = system.pathForFile("", system.DocumentsDirectory)
 
 if properties.isDevice then
     properties.mapDir = ""
+    properties.baseMapDir = system.DocumentsDirectory
 else
     properties.mapDir = "mapy"
+    properties.baseMapDir = system.ResourcesDirectory
 end
 
 return properties
