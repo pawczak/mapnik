@@ -140,26 +140,23 @@ local mapa = display.newImage("mapy/beskid_makowski.jpg")
 mapa.dots = {}
 
 
-local function outOfBounds(image, imgCenter, newScale, touchStartX, touchStartY, touchStartContentWidth, touchStartContentHeight)
---    local newX, newY, newContentWidth, newContentHeight
---    newX = image.x + (imgCenter.x - image.prevCentre.x)
---    newY = image.y + (imgCenter.y - image.prevCentre.y)
---    local cancelX, cancelY
---    local prevOutX = image.x + image.contentWidth * 0.5 > display.contentWidth or image.x - image.contentWidth * 0.5 > display.screenOriginX
---    local prevOutY = image.y + image.contentWidth * 0.5 > display.contentHeight or image.y - image.contentHeight * 0.5 > display.screenOriginY
---    newContentWidth = (image.contentWidth * image.xScale * newScale)
---    newContentHeight = (image.contentHeight * image.yScale * newScale)
-----    local startCancelXPlus = image.startX + image.startContentWidth * 0.5 < display.contentWidth
-----    local startCancelXMinus = image.startX - image.startContentWidth * 0.5 > display.screenOriginX
-----    local startCancelYPlus = image.startY + image.startContentHeight * 0.5 < display.contentHeight
-----    local startCancelYMinus = image.startY - image.startContentHeight * 0.5 > display.screenOriginY
---    local startCancelY = image.startY + image.startContentHeight * 0.5 > display.contentHeight or image.startY - image.startContentHeight * 0.5 > display.screenOriginY
---    if newX + newContentWidth * 0.5 < display.contentWidth or newX - newContentWidth * 0.5 > display.screenOriginX and not prevOutX then
---        cancelX = true
---    elseif newY + newContentHeight * 0.5 > display.contentHeight + display.screenOriginY or newY - newContentHeight * 0.5 < display.screenOriginY and not prevOutY then
---        cancelY = true
---    end
-    return false,false
+local function outOfBounds(image, imgCenter)
+    local leftLock, rightLock, topLock, bottomLock
+
+    if image.x + image.contentWidth * 0.5 <= display.contentWidth then
+        rightLock = true
+    end
+    if image.x - image.contentWidth * 0.5 >= display.screenOriginX then
+        leftLock = true
+    end
+    if image.y + image.contentHeight * 0.5 <= display.contentHeight then
+        bottomLock = true
+    end
+    if image.y - image.contentHeight * 0.5 >= display.screenOriginY then
+        topLock = true
+    end
+
+    return leftLock, rightLock, topLock, bottomLock
 end
 
 -- advanced multi-touch event listener
@@ -168,7 +165,6 @@ function mapa:touch(e)
     -- get the object which received the touch event
     local target = e.target
     local centre = calcAvgCentre(mapa.dots)
-    --    local cancelX, cancelY = outOfBounds(target, centre)
 
     -- handle began phase of the touch event life cycle...
     if (e.phase == "began") then
@@ -198,29 +194,37 @@ function mapa:touch(e)
 
             -- calculate the average centre position of all touch points
 
-
             -- refresh tracking dot scale and rotation values
             updateTracking(mapa.prevCentre, mapa.dots)
 
-            local cancelX, cancelY = outOfBounds(mapa, centre, scale)
+            local leftEdgeLock, rightEdgeLock, topEdgeLock, bottomEdgeLock = outOfBounds(mapa, centre, scale)
+            print("l " .. tostring(leftEdgeLock) .. " r " .. tostring(rightEdgeLock) .. " t " .. tostring(topEdgeLock) .. " b " .. tostring(bottomEdgeLock))
             -- if there is more than one tracking dot, calculate the rotation and scaling
             scale = calcAverageScaling(mapa.dots)
             if (#mapa.dots > 1) then
                 -- calculate the average scaling of the tracking dots
-
+                print('scale ' .. scale)
                 -- apply scaling to mapa
-                if not cancelX then
+                if (not leftEdgeLock and not rightEdgeLock and scale < 1) or scale > 1 then
                     mapa.xScale = mapa.xScale * scale
                 end
-                if not cancelY then
+                if (not topEdgeLock and not bottomEdgeLock and scale < 1) or scale > 1 then
                     mapa.yScale = mapa.yScale * scale
                 end
             end
             -- update the position of mapa
-            if not cancelX then
+            local moveLeft = mapa.x < mapa.x + (centre.x - mapa.prevCentre.x)
+            local moveRight = mapa.x > mapa.x + (centre.x - mapa.prevCentre.x)
+            local moveTop = mapa.y < mapa.y + (centre.y - mapa.prevCentre.y)
+            local moveBottom = mapa.y > mapa.y + (centre.y - mapa.prevCentre.y)
+            print("moveleft " .. tostring(moveLeft))
+            print("moveright " .. tostring(moveRight))
+            print("movetop " .. tostring(moveTop))
+            print("movebottom " .. tostring(moveBottom))
+            if (moveLeft and not leftEdgeLock) or (moveRight and not rightEdgeLock) then
                 mapa.x = mapa.x + (centre.x - mapa.prevCentre.x)
             end
-            if not cancelY then
+            if (moveTop and not topEdgeLock) or (moveBottom and not bottomEdgeLock) then
                 mapa.y = mapa.y + (centre.y - mapa.prevCentre.y)
             end
             -- store the centre of all touch points
