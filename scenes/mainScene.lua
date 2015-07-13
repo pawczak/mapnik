@@ -10,7 +10,7 @@ local buttons = {}
 
 local function onChoosenMapClick(event)
     if event.phase == "ended" then
-        composer.gotoScene("scenes.mapListScene")
+        composer.gotoScene("scenes.mapListScene", properties.sceneChangeOptions)
         Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapListSceneName })
     end
 end

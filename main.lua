@@ -41,10 +41,10 @@ local function backButton(event)
         if sceneStack[#sceneStack - 1] then prevScene = sceneStack[#sceneStack - 1]; table.remove(sceneStack) end
         if not prevScene then return end
         print("sceneStackCount" .. #sceneStack .. " prevScene REMOVED" .. prevScene)
-        composer.gotoScene(prevScene)
+        composer.gotoScene(prevScene, properties.sceneChangeOptions)
         composer.removeScene(curScene)
         backButtonEnabled = false
-        timer.performWithDelay(1000, function()
+        timer.performWithDelay(properties.sceneChangeTime, function()
             toggleBackButton(true)
         end, 1)
     end

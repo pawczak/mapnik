@@ -70,11 +70,9 @@ function scene:create(event)
         if event.phase == "release" then
 
             print("release " .. maps[event.row.index])
-            local options = {
-                --                effect = "fade",
-                --                time = 800,
-                params = { mapFileName = maps[event.row.index] }
-            }
+            local options = properties.sceneChangeOptions
+
+            options.params = { mapFileName = maps[event.row.index] }
 
             composer.gotoScene("scenes.mapScene", options)
             Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapSceneName })

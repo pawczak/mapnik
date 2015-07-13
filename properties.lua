@@ -36,5 +36,8 @@ else
     properties.mapListBaseDir = system.ResourcesDirectory
     properties.mapListDir = "mapy"
 end
+
+properties.sceneChangeTime = 1000
+properties.sceneChangeOptions = { effect = "crossFade", time = properties.sceneChangeTime }
 --file system
 return properties
