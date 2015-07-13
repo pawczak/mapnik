@@ -3,11 +3,11 @@ local properties = require("properties")
 
 local scene = composer.newScene()
 
-local fileName
+local fileNam, sceneGroup
 -- scaling
 
 -- turn on multitouch
-system.activate("multitouch")
+system .activate("multitouch")
 
 -- which environment are we running on?
 local isDevice = properties.isDevice
@@ -32,8 +32,7 @@ local isDevice = properties.isDevice
 
 -- "scene:create()"
 function scene:create(event)
-
-    local sceneGroup = self.view
+    sceneGroup = self.view
     fileName = event.params.mapFileName
     print('saving fileName ' .. fileName)
     -- Initialize the scene here.
@@ -167,7 +166,7 @@ local function createMapObj(mapFileName)
     -- create object to listen for new touches
     print(tostring(mapFileName))
     local mapa = display.newImage(properties.mapDir .. "/" .. mapFileName)
-
+    sceneGroup:insert(mapa)
     -- keep a list of the tracking dots
     mapa.dots = {}
 
@@ -300,6 +299,8 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
+        createMapObj(fileName)
+        print("WILL")
     elseif (phase == "did") then
         -- Called when the scene is still off screen (but is about to come on screen).
 
@@ -320,7 +321,7 @@ function scene:hide(event)
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
-        createMapObj(fileName)
+
     elseif (phase == "did") then
 
         -- Called immediately after scene goes off screen.

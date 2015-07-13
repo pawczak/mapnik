@@ -78,7 +78,7 @@ end
 function scene:destroy(event)
 
     local sceneGroup = self.view
-    for i=#buttons,1,-1 do
+    for i = #buttons, 1, -1 do
         buttons[i]:removeSelf(); buttons[i] = nil
     end
     -- Called prior to the removal of scene's view ("sceneGroup").

@@ -4,76 +4,8 @@ local lfs = require("lfs")
 local widget = require("widget")
 
 local scene = composer.newScene()
+
 local maps = {}
-
-local listLabel = display.newGroup()
-local listLabelRect = display.newRect(listLabel, 0, 0, properties.width, properties.labelHeight)
-local listLabelText = display.newText(listLabel, "map list", 0, 0, "arial")
-
-listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
-listLabelRect:setFillColor(0.1, 0.3, 0.5, 0.9)
-
-local doc_path = system.pathForFile(properties.mapDir, system.ResourceDirectory)
-
-for file in lfs.dir(doc_path) do
-    -- file is the current file or directory name
-    print("Found file: " .. file)
-    if file ~= "." and file ~= ".." then
-        table.insert(maps, file)
-    end
-end
-
-
-local function onRowRender(event)
-
-    -- Get reference to the row group
-    local row = event.row
-
-    -- Cache the row "contentWidth" and "contentHeight" because the row bounds can change as children objects are added
-    local rowHeight = row.contentHeight
-    local rowWidth = row.contentWidth
-
-    local rowTitle = display.newText(row, maps[row.index], 0, 0, nil, 14)
-    rowTitle:setFillColor(0)
-
-    -- Align the label left and vertically centered
-    rowTitle.anchorX = 0
-    rowTitle.x = 0
-    rowTitle.y = rowHeight * 0.5
-end
-
-local function onRowTouch(event)
-    --TODO:goto mapScene with object map to show
-    if event.phase == "release" then
-
-        print("release " .. maps[event.row.index])
-        local options = {
-            effect = "fade",
-            time = 800,
-            params = { mapFileName = maps[event.row.index] }
-        }
-
-        composer.gotoScene("scenes.mapScene", options)
-    end
-end
-
--- Create the widget
-local tableView = widget.newTableView
-    {
-        left = properties.x,
-        top = properties.y + listLabel.contentHeight,
-        height = properties.contentWidth,
-        width = properties.contentHeight,
-        onRowRender = onRowRender,
-        onRowTouch = onRowTouch,
-        listener = scrollListener
-    }
-
--- Insert 40 rows
-for i = 1, #maps do
-    -- Insert a row into the tableView
-    tableView:insertRow({ mapImg = maps[i] })
-end
 
 -- -----------------------------------------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE unless "composer.removeScene()" is called.
@@ -88,7 +20,76 @@ end
 function scene:create(event)
 
     local sceneGroup = self.view
+    local listLabel = display.newGroup()
+    local listLabelRect = display.newRect(listLabel, 0, 0, properties.width, properties.labelHeight)
+    local listLabelText = display.newText(listLabel, "map list", 0, 0, "arial")
+    listLabelRect:setFillColor(0.1, 0.3, 0.5, 0.9)
+    sceneGroup:insert(listLabel)
 
+    listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
+
+    local doc_path = system.pathForFile(properties.mapDir, system.ResourceDirectory)
+
+    for file in lfs.dir(doc_path) do
+        -- file is the current file or directory name
+        print("Found file: " .. file)
+        if file ~= "." and file ~= ".." then
+            table.insert(maps, file)
+        end
+    end
+
+
+    local function onRowRender(event)
+
+        -- Get reference to the row group
+        local row = event.row
+
+        -- Cache the row "contentWidth" and "contentHeight" because the row bounds can change as children objects are added
+        local rowHeight = row.contentHeight
+        local rowWidth = row.contentWidth
+
+        local rowTitle = display.newText(row, maps[row.index], 0, 0, nil, 14)
+        rowTitle:setFillColor(0)
+
+        -- Align the label left and vertically centered
+        rowTitle.anchorX = 0
+        rowTitle.x = 0
+        rowTitle.y = rowHeight * 0.5
+    end
+
+    local function onRowTouch(event)
+        --TODO:goto mapScene with object map to show
+        if event.phase == "release" then
+
+            print("release " .. maps[event.row.index])
+            local options = {
+--                effect = "fade",
+--                time = 800,
+                params = { mapFileName = maps[event.row.index] }
+            }
+
+            composer.gotoScene("scenes.mapScene", options)
+        end
+    end
+
+    -- Create the widget
+    local tableView = widget.newTableView
+        {
+            left = properties.x,
+            top = properties.y + listLabel.contentHeight,
+            height = properties.contentWidth,
+            width = properties.contentHeight,
+            onRowRender = onRowRender,
+            onRowTouch = onRowTouch,
+            listener = scrollListener
+        }
+
+    sceneGroup:insert(tableView)
+    -- Insert 40 rows
+    for i = 1, #maps do
+        -- Insert a row into the tableView
+        tableView:insertRow({ mapImg = maps[i] })
+    end
     -- Initialize the scene here.
     -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
