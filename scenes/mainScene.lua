@@ -23,8 +23,35 @@ chooseButtonGroup:addEventListener("touch", onChoosenMapClick)
 
 chooseButtonGroup.x, chooseButtonGroup.y = display.contentCenterX, display.contentCenterY
 
+local function onAddMapClick(event)
 
+    local function onComplete(event)
+        --        local userMap = event.target
+--        for i = 1, 10 do
+--        end
+        native.showAlert("Map", "Map added!")
+    end
+
+    if media.hasSource(media.PhotoLibrary) then
+        media.selectPhoto({ mediaSource = media.PhotoLibrary, destination = { baseDir = properties.documentsPath, fileName = event.target.name, type = "image" }, listener = onComplete })
+    else
+        native.showAlert("Corona", "This device does not have a photo library.", { "OK" })
+    end
+end
+
+local addMapButtonGroup = display.newGroup()
+local addMapButtonRect = display.newRect(addMapButtonGroup, 0, 0, properties.mainButtonWidth, properties.mainButtonHeight)
+local addMapButtonText = display.newText(addMapButtonGroup, "add map", 0, 0, "arial")
+addMapButtonRect:setFillColor(1, 1, 1, 1)
+addMapButtonText:setFillColor(0, 0, 0, 1)
+addMapButtonRect:toBack()
+addMapButtonGroup:addEventListener("touch", onAddMapClick)
+
+addMapButtonGroup.x, addMapButtonGroup.y = chooseButtonGroup.x, chooseButtonGroup.y + chooseButtonGroup.contentHeight * 0.5 + addMapButtonGroup.contentHeight * 0.5 + properties.mainSceneBtnDistance
+
+--system.DocumentsDirectory
 table.insert(buttons, chooseButtonGroup)
+table.insert(buttons, addMapButtonGroup)
 
 -- -----------------------------------------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE unless "composer.removeScene()" is called.

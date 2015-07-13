@@ -1,6 +1,5 @@
 local properties = {}
 
-properties.mapDir = "mapy"
 
 --display:
 properties.width = display.actualContentWidth
@@ -15,7 +14,11 @@ properties.mainButtonHeight = properties.height * 0.2
 
 properties.labelHeight = 100
 
+--design
+properties.mainSceneBtnDistance = properties.height * 0.1
+
 --events
+properties.eventTypeCopyMap = "eventTypeCopyMap"
 --scene events
 properties.eventTypeAddScene = "eventTypeAddScene"
 properties.eventTypeResetSceneStack = "eventTypeResetSceneStack"
@@ -26,5 +29,14 @@ properties.mainSceneName = "scenes.mainScene"
 
 --device/sim
 properties.isDevice = (system.getInfo("environment") == "device")
+
+--file system
+properties.documentsPath = system.pathForFile("", system.DocumentsDirectory)
+
+if properties.isDevice then
+    properties.mapDir = ""
+else
+    properties.mapDir = "mapy"
+end
 
 return properties

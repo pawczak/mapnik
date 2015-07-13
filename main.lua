@@ -22,6 +22,7 @@ local function resetSceneStack(event)
     end
 end
 
+--properties.documentsPath
 Runtime:addEventListener(properties.eventTypeResetSceneStack, resetSceneStack)
 
 local function backButton(event)
@@ -57,4 +58,106 @@ local function startApp()
     Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mainSceneName })
 end
 
+local function doesFileExist(fname, path)
+
+    local results = false
+
+    local filePath = system.pathForFile(fname, path)
+
+    --filePath will be 'nil' if file doesn't exist and the path is 'system.ResourceDirectory'
+    if (filePath) then
+        filePath = io.open(filePath, "r")
+    end
+
+    if (filePath) then
+        print("File found: " .. fname)
+        --clean up file handles
+        filePath:close()
+        results = true
+    else
+        print("File does not exist: " .. fname)
+    end
+
+    return results
+end
+
+local function copyMap(srcName, srcPath, dstName, dstPath, overwrite)
+
+    --    local params = event.params --event
+    local results = false
+
+    local srcPath = doesFileExist(srcName, srcPath)
+
+    if (srcPath == false) then
+        return nil -- nil = source file not found
+    end
+
+    --check to see if destination file already exists
+    if not (overwrite) then
+        if (fileLib.doesFileExist(dstName, dstPath)) then
+            return 1 -- 1 = file already exists (don't overwrite)
+        end
+    end
+
+    --copy the source file to the destination file
+    local rfilePath = system.pathForFile(srcName, srcPath)
+    local wfilePath = system.pathForFile(dstName, dstPath)
+
+    local rfh = io.open(rfilePath, "rb")
+    local wfh = io.open(wfilePath, "wb")
+
+    if not (wfh) then
+        print("writeFileName open error!")
+        return false
+    else
+        --read the file from 'system.ResourceDirectory' and write to the destination directory
+        local data = rfh:read("*a")
+        if not (data) then
+            print("read error!")
+            return false
+        else
+            if not (wfh:write(data)) then
+                print("write error!")
+                return false
+            end
+        end
+    end
+
+    results = 2 -- 2 = file copied successfully!
+
+    --clean up file handles
+    rfh:close()
+    wfh:close()
+
+    return results
+end
+--
+--local function copyStartPack()
+--    local doc_path = system.pathForFile(properties.mapDir, system.ResourceDirectory)
+--
+--    for file in lfs.dir(doc_path) do
+--        -- file is the current file or directory name
+--        print("Found file: " .. file)
+--        if file ~= "." and file ~= ".." then
+--            print("copy to " .. string.sub(file, 1, string.len(file) - 4))
+--            copyMap(file, properties.mapDir, string.sub(file, 1, string.len(file) - 4), system.DocumentsDirectory, true)
+--
+--            --            table.insert(maps, file)
+--        end
+--    end
+--end
+--
+--copyStartPack()
+
+
+
+
+
 timer.performWithDelay(1000, startApp, 1)
+
+
+
+Runtime:addEventListener(properties.eventTypeCopyMap, copyMap)
+
+--copy 'readme.txt' from the 'system.ResourceDirectory' to 'system.DocumentsDirectory'.
+--copyFile( "readme.txt", nil, "readme.txt", system.DocumentsDirectory/maps, true )
