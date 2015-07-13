@@ -11,15 +11,7 @@ system.activate("multitouch")
 
 -- which environment are we running on?
 local isDevice = properties.isDevice
-
-
-
-
-
-
-
-
-
+local fileName
 
 -- -----------------------------------------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE unless "composer.removeScene()" is called.
@@ -93,26 +85,26 @@ local function createMapObj(mapFileName)
         return a
     end
 
-    local function calcAverageRotation( points )
+    local function calcAverageRotation(points)
 
         local total = 0
-        for i=1, #points do
+        for i = 1, #points do
             local point = points[i]
-            total = total + smallestAngleDiff( point.angle, point.prevAngle )
+            total = total + smallestAngleDiff(point.angle, point.prevAngle)
         end
 
         return total / #points
     end
 
     -- calculate each tracking dot's distance and angle from the midpoint
-    local function updateTracking( centre, points )
+    local function updateTracking(centre, points)
 
-        for i=1, #points do
+        for i = 1, #points do
             local point = points[i]
             point.prevAngle = point.angle
             point.prevDistance = point.distance
-            point.angle = angleBetweenPoints( centre, point )
-            point.distance = lengthOf( centre, point )
+            point.angle = angleBetweenPoints(centre, point)
+            point.distance = lengthOf(centre, point)
         end
     end
 
@@ -304,7 +296,7 @@ local function createMapObj(mapFileName)
                     print('scale ' .. scale)
                     -- apply scaling to mapa
                     local scaleLock = leftEdgeLock or rightEdgeLock or topEdgeLock or bottomEdgeLock
-                    rotate = calcAverageRotation( mapa.dots )
+                    rotate = calcAverageRotation(mapa.dots)
                     mapa.rotation = mapa.rotation + rotate
                     if (not scaleLock and scale < 1) or scale > 1 then
                         mapa.xScale = mapa.xScale * scale
