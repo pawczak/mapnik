@@ -1,9 +1,17 @@
 local composer = require("composer")
 local properties = require("properties")
 local lfs = require("lfs")
+local widget = require("widget")
 
 local scene = composer.newScene()
 local maps = {}
+
+local listLabel = display.newGroup()
+local listLabelRect = display.newRect(listLabel, 0, 0, properties.width, properties.labelHeight)
+local listLabelText = display.newText(listLabel, "map list", 0, 0, "arial")
+
+listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
+listLabelRect:setFillColor(0.1, 0.3, 0.5, 0.9)
 
 local doc_path = system.pathForFile(properties.mapDir, system.ResourceDirectory)
 
@@ -15,7 +23,6 @@ for file in lfs.dir(doc_path) do
     end
 end
 
-local widget = require("widget")
 
 local function onRowRender(event)
 
@@ -39,17 +46,24 @@ local function onRowTouch(event)
     --TODO:goto mapScene with object map to show
     if event.phase == "release" then
 
-        composer.gotoScene("scenes.mapScene", { mapFileName = maps[i] })
+        print("release " .. maps[event.row.index])
+        local options = {
+            effect = "fade",
+            time = 800,
+            params = { mapFileName = maps[event.row.index] }
+        }
+
+        composer.gotoScene("scenes.mapScene", options)
     end
 end
 
 -- Create the widget
 local tableView = widget.newTableView
     {
-        left = 200,
-        top = 200,
-        height = 330,
-        width = 300,
+        left = properties.x,
+        top = properties.y + listLabel.contentHeight,
+        height = properties.contentWidth,
+        width = properties.contentHeight,
         onRowRender = onRowRender,
         onRowTouch = onRowTouch,
         listener = scrollListener
@@ -89,7 +103,7 @@ function scene:show(event)
     if (phase == "will") then
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif (phase == "did") then
-        local prevScene = composer.getSceneName( "previous" )
+        local prevScene = composer.getSceneName("previous")
         print(prevScene)
         composer.removeScene(prevScene)
         -- Called when the scene is now on screen.
