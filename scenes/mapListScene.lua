@@ -69,6 +69,7 @@ function scene:create(event)
             }
 
             composer.gotoScene("scenes.mapScene", options)
+            Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapSceneName })
         end
     end
 

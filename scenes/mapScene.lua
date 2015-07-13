@@ -300,7 +300,7 @@ function scene:show(event)
 
     if (phase == "will") then
         createMapObj(fileName)
-        print("WILL")
+        print("WILL".."aaa")
     elseif (phase == "did") then
         -- Called when the scene is still off screen (but is about to come on screen).
 

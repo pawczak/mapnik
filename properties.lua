@@ -15,6 +15,15 @@ properties.mainButtonHeight = properties.height * 0.2
 
 properties.labelHeight = 100
 
+--events
+--scene events
+properties.eventTypeAddScene = "eventTypeAddScene"
+properties.eventTypeResetSceneStack = "eventTypeResetSceneStack"
+--scene names
+properties.mapSceneName = "scenes.mapScene"
+properties.mapListSceneName = "scenes.mapListScene"
+properties.mainSceneName = "scenes.mainScene"
+
 --device/sim
 properties.isDevice = (system.getInfo("environment") == "device")
 
