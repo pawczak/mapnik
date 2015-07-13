@@ -14,6 +14,7 @@ properties.mainButtonHeight = properties.height * 0.2
 
 properties.labelHeight = 100
 
+properties.mapTempFileName = "mapTempFileName"
 --design
 properties.mainSceneBtnDistance = properties.height * 0.1
 
@@ -29,15 +30,11 @@ properties.mainSceneName = "scenes.mainScene"
 
 --device/sim
 properties.isDevice = (system.getInfo("environment") == "device")
-
---file system
-
 if properties.isDevice then
-    properties.mapDir = ""
-    properties.baseMapDir = system.DocumentsDirectory
+    properties.mapListBaseDir = system.TemporaryDirectory
 else
-    properties.mapDir = "mapy"
-    properties.baseMapDir = system.ResourcesDirectory
+    properties.mapListBaseDir = system.ResourcesDirectory
+    properties.mapListDir = "mapy"
 end
-
+--file system
 return properties

@@ -1,5 +1,6 @@
 local composer = require("composer")
 local properties = require("properties")
+print("isDevice " .. tostring(properties.isDevice))
 
 local backButtonEnabled = true
 
@@ -26,7 +27,7 @@ end
 Runtime:addEventListener(properties.eventTypeResetSceneStack, resetSceneStack)
 
 local function backButton(event)
-    if not backButtonEnabled then return end
+    if not backButtonEnabled then return true end
     local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
     print(properties.isDevice)
     print(message)
@@ -131,23 +132,28 @@ local function copyMap(srcName, srcPath, dstName, dstPath, overwrite)
 
     return results
 end
+
 --
---local function copyStartPack()
---    local doc_path = system.pathForFile(properties.mapDir, system.ResourceDirectory)
---
---    for file in lfs.dir(doc_path) do
---        -- file is the current file or directory name
---        print("Found file: " .. file)
---        if file ~= "." and file ~= ".." then
---            print("copy to " .. string.sub(file, 1, string.len(file) - 4))
---            copyMap(file, properties.mapDir, string.sub(file, 1, string.len(file) - 4), system.DocumentsDirectory, true)
---
---            --            table.insert(maps, file)
---        end
---    end
---end
---
---copyStartPack()
+local function copyStartPack()
+    --TODO:take maps from some sort of package                              , reapir next line
+    local doc_path = system.pathForFile(properties.mapDir, system.DocumentsDirectory)
+    local path = system.pathForFile(nil, system.DocumentsDirectory)
+    print(path)
+    for file in lfs.dir(doc_path) do
+        -- file is the current file or directory name
+        print("Found file: " .. file)
+        if file ~= "." and file ~= ".." then
+            print("copy to " .. string.sub(file, 1, string.len(file) - 4))
+            copyMap(file, properties.mapDir, string.sub(file, 1, string.len(file) - 4), system.TemporaryDirectory, true)
+
+            --            table.insert(maps, file)
+        end
+    end
+end
+
+if not properties.isDevice then
+    copyStartPack()
+end
 
 
 

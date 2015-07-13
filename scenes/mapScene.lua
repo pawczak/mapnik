@@ -39,6 +39,11 @@ function scene:create(event)
     -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end
 
+scene.resetToDefault = function(mapObj)
+    mapObj.x, mapObj.xScale, mapObj.y, mapObj.yScale = properties.center.x, 1, properties.center.y, 1
+end
+
+
 local function createMapObj(mapFileName)
     -- returns the distance between points a and b
     function lengthOf(a, b)
@@ -81,6 +86,8 @@ local function createMapObj(mapFileName)
 
         return total / #points
     end
+
+
 
     -- creates an object to be moved
     function newTrackDot(e)
@@ -165,7 +172,13 @@ local function createMapObj(mapFileName)
 
     -- create object to listen for new touches
     print(tostring(mapFileName))
-    local mapa = display.newImage(properties.mapDir .. "/" .. mapFileName)
+    local mapa
+    if properties.isDevice then
+        mapa = display.newImage(mapFileName, properties.mapListBaseDir)
+    else
+        mapa = display.newImage(properties.mapListDir .. "/" .. mapFileName)
+    end
+
     sceneGroup:insert(mapa)
 
 
@@ -176,8 +189,8 @@ local function createMapObj(mapFileName)
     else
         newScale = newWidthScale
     end
---    mapa.xScale, mapa.yScale = newScale, newScale
-    mapa.x, mapa.y = properties.center.x,properties.center.y
+    --    mapa.xScale, mapa.yScale = newScale, newScale
+    mapa.x, mapa.y = properties.center.x, properties.center.y
 
 
     -- keep a list of the tracking dots
@@ -249,10 +262,11 @@ local function createMapObj(mapFileName)
                     -- calculate the average scaling of the tracking dots
                     print('scale ' .. scale)
                     -- apply scaling to mapa
-                    if (not leftEdgeLock and not rightEdgeLock and scale < 1) or scale > 1 then
+                    local scaleLock = leftEdgeLock or rightEdgeLock or topEdgeLock or bottomEdgeLock
+                    if (not scaleLock and scale < 1) or scale > 1 then
                         mapa.xScale = mapa.xScale * scale
                     end
-                    if (not topEdgeLock and not bottomEdgeLock and scale < 1) or scale > 1 then
+                    if (not scaleLock and scale < 1) or scale > 1 then
                         mapa.yScale = mapa.yScale * scale
                     end
                 end
@@ -282,6 +296,7 @@ local function createMapObj(mapFileName)
 
                 -- remove dot from list
                 table.remove(mapa.dots, index)
+
 
                 -- remove tracking dot from the screen
                 e.target:removeSelf()

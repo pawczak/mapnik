@@ -29,7 +29,9 @@ function scene:create(event)
     listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
 
     print("mapDir", properties.mapDir)
-    local doc_path = system.pathForFile(properties.mapDir, properties.documentsPath)
+    local destDirt
+
+    local doc_path = system.pathForFile("mapy", properties.mapListBaseDir)
 
     for file in lfs.dir(doc_path) do
         -- file is the current file or directory name
