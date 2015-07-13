@@ -74,6 +74,7 @@ function scene:create(event)
 
             options.params = { mapFileName = maps[event.row.index] }
 
+            Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton })
             composer.gotoScene("scenes.mapScene", options)
             Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapSceneName })
         end
@@ -111,9 +112,7 @@ function scene:show(event)
     if (phase == "will") then
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif (phase == "did") then
-        local prevScene = composer.getSceneName("previous")
-        print(prevScene)
-        composer.removeScene(prevScene)
+        Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton, value = true })
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.

@@ -6,9 +6,11 @@ local backButtonEnabled = true
 
 local sceneStack = {}
 
-local function toggleBackButton(value)
-    backButtonEnabled = value
+local function toggleBackButton(event)
+    backButtonEnabled = event.value
 end
+
+Runtime:addEventListener(properties.eventTypeToggleBackButton, toggleBackButton)
 
 local function addScene(event)
     print('add scene ' .. event.sceneName)
@@ -41,12 +43,10 @@ local function backButton(event)
         if sceneStack[#sceneStack - 1] then prevScene = sceneStack[#sceneStack - 1]; table.remove(sceneStack) end
         if not prevScene then return end
         print("sceneStackCount" .. #sceneStack .. " prevScene REMOVED" .. prevScene)
+        Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton })
         composer.gotoScene(prevScene, properties.sceneChangeOptions)
         composer.removeScene(curScene)
         backButtonEnabled = false
-        timer.performWithDelay(properties.sceneChangeTime, function()
-            toggleBackButton(true)
-        end, 1)
     end
     return true
 end
@@ -55,6 +55,7 @@ Runtime:addEventListener("key", backButton)
 
 
 local function startApp()
+    Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton })
     composer.gotoScene("scenes.mainScene")
     Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mainSceneName })
 end

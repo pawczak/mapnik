@@ -19,6 +19,8 @@ properties.mapTempFileName = "mapTempFileName"
 properties.mainSceneBtnDistance = properties.height * 0.1
 
 --events
+--backbutton
+properties.eventTypeToggleBackButton = "eventTypeToggleBackButton"
 properties.eventTypeCopyMap = "eventTypeCopyMap"
 --scene events
 properties.eventTypeAddScene = "eventTypeAddScene"
