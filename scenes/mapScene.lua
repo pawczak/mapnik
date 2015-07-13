@@ -64,14 +64,55 @@ local function createMapObj(mapFileName)
         return { x = x / #points, y = y / #points }
     end
 
-    -- calculate each tracking dot's distance and angle from the midpoint
-    local function updateTracking(centre, points)
-        for i = 1, #points do
+    -- returns the degrees between (0,0) and pt (note: 0 degrees is 'east')
+    local function angleOfPoint(pt)
+        local x, y = pt.x, pt.y
+        local radian = math.atan2(y, x)
+        local angle = radian * 180 / math.pi
+        if angle < 0 then angle = 360 + angle end
+        return angle
+    end
+
+    -- returns the degrees between two points (note: 0 degrees is 'east')
+    local function angleBetweenPoints(a, b)
+        local x, y = b.x - a.x, b.y - a.y
+        return angleOfPoint({ x = x, y = y })
+    end
+
+    -- returns the smallest angle between the two angles
+    -- ie: the difference between the two angles via the shortest distance
+    local function smallestAngleDiff(target, source)
+        local a = target - source
+
+        if (a > 180) then
+            a = a - 360
+        elseif (a < -180) then
+            a = a + 360
+        end
+
+        return a
+    end
+
+    local function calcAverageRotation( points )
+
+        local total = 0
+        for i=1, #points do
             local point = points[i]
+            total = total + smallestAngleDiff( point.angle, point.prevAngle )
+        end
 
+        return total / #points
+    end
+
+    -- calculate each tracking dot's distance and angle from the midpoint
+    local function updateTracking( centre, points )
+
+        for i=1, #points do
+            local point = points[i]
+            point.prevAngle = point.angle
             point.prevDistance = point.distance
-
-            point.distance = lengthOf(centre, point)
+            point.angle = angleBetweenPoints( centre, point )
+            point.distance = lengthOf( centre, point )
         end
     end
 
@@ -263,6 +304,8 @@ local function createMapObj(mapFileName)
                     print('scale ' .. scale)
                     -- apply scaling to mapa
                     local scaleLock = leftEdgeLock or rightEdgeLock or topEdgeLock or bottomEdgeLock
+                    rotate = calcAverageRotation( mapa.dots )
+                    mapa.rotation = mapa.rotation + rotate
                     if (not scaleLock and scale < 1) or scale > 1 then
                         mapa.xScale = mapa.xScale * scale
                     end
@@ -285,6 +328,7 @@ local function createMapObj(mapFileName)
                 if (moveTop and not topEdgeLock) or (moveBottom and not bottomEdgeLock) then
                     mapa.y = mapa.y + (centre.y - mapa.prevCentre.y)
                 end
+
                 -- store the centre of all touch points
                 mapa.prevCentre = centre
             else -- "ended" and "cancelled" phases
