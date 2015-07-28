@@ -13,6 +13,10 @@ button.new = function(params)
         buttonGroup:insert(buttonBg)
     end
 
+    if params.undimColor then
+        buttonBg:setFillColor(params.undimColor[1],params.undimColor[2],params.undimColor[3],params.undimColor[4])
+    end
+
     if params.text then
         buttonText = display.newText(params.text, 0, 0, params.font, params.fontSize)
         buttonGroup:insert(buttonText)
@@ -23,6 +27,11 @@ button.new = function(params)
             if takeFocus then
                 display.getCurrentStage():setFocus(event.target)
                 buttonGroup.touchInitX, buttonGroup.touchInitY = event.x, event.y
+
+                if params.dimColor then
+                    buttonBg:setFillColor(params.dimColor[1],params.dimColor[2],params.dimColor[3],params.dimColor[4])
+                end
+
                 return true
             end
         elseif event.phase == "moved" then
@@ -31,6 +40,9 @@ button.new = function(params)
                 return true
             end
         elseif event.phase == "ended" then
+            if params.undimColor then
+                buttonBg:setFillColor(params.undimColor[1],params.undimColor[2],params.undimColor[3],params.undimColor[4])
+            end
             callback(event)
             display.getCurrentStage():setFocus(nil)
         end

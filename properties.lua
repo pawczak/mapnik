@@ -44,5 +44,8 @@ properties.sceneChangeOptions = { effect = "crossFade", time = properties.sceneC
 
 --maplist
 properties.mapRowOptionsFontSize = 15
+properties.rowButtonClickColor = { 0.1, 0.3, 0.5, 0.9 }
+properties.rowButtonUnclickColor = { 0.3, 0.7, 0.5, 0.9 }
+
 --file system
 return properties

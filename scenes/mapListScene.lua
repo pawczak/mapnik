@@ -78,11 +78,9 @@ function scene:create(event)
 
         local renameButton, removeButton
         local renameImg, removeImg = display.newRect(0, 0, rowWidth * 0.25, rowHeight), display.newRect(0, 0, rowWidth * 0.25, rowHeight)
-        renameImg:setFillColor(0.1, 0.3, 0.5, 0.9)
-        removeImg:setFillColor(0.1, 0.3, 0.5, 0.9)
 
-        local renameButtonParams = { img = renameImg, text = "rename map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = renameMap, takeFocus = true }
-        local removeButtonParams = { img = removeImg, text = "remove map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = removeMap, takeFocus = true }
+        local renameButtonParams = { img = renameImg, text = "rename map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = renameMap, takeFocus = true, dimColor = properties.rowButtonUnclickColor, undimColor = properties.rowButtonClickColor }
+        local removeButtonParams = { img = removeImg, text = "remove map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = removeMap, takeFocus = true, dimColor = properties.rowButtonUnclickColor, undimColor = properties.rowButtonClickColor }
 
         renameButton, removeButton = button.new(renameButtonParams), button.new(removeButtonParams)
 
@@ -96,7 +94,6 @@ function scene:create(event)
 
         optionsGroup.x = rowWidth - optionsGroup.contentWidth
         optionsGroup.y = optionsGroup.contentHeight * 0.5
-
     end
 
     local function onRowTouch(event)
