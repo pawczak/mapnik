@@ -47,14 +47,16 @@ function scene:create(event)
         end
     end
 
-    local function removeMap(event)
-        print("rename")
-    end
-
-    local function renameMap(event)
-
+    local function removeMap(mapIndex)
         print("remove")
+        log.table(maps[mapIndex])
     end
+
+    local function renameMap(mapIndex)
+        print("rename")
+        log.table(maps[mapIndex])
+    end
+
 
     local function onRowRender(event)
 
@@ -79,8 +81,30 @@ function scene:create(event)
         local renameButton, removeButton
         local renameImg, removeImg = display.newRect(0, 0, rowWidth * 0.25, rowHeight), display.newRect(0, 0, rowWidth * 0.25, rowHeight)
 
-        local renameButtonParams = { img = renameImg, text = "rename map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = renameMap, takeFocus = true, dimColor = properties.rowButtonUnclickColor, undimColor = properties.rowButtonClickColor }
-        local removeButtonParams = { img = removeImg, text = "remove map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = removeMap, takeFocus = true, dimColor = properties.rowButtonUnclickColor, undimColor = properties.rowButtonClickColor }
+        local renameButtonParams = {
+            img = renameImg,
+            text = "rename map",
+            fontSize = properties.mapRowOptionsFontSize,
+            font = "arial",
+            callback = function(event)
+                renameMap(row.index)
+            end,
+            takeFocus = true,
+            dimColor = properties.rowButtonUnclickColor,
+            undimColor = properties.rowButtonClickColor
+        }
+        local removeButtonParams = {
+            img = removeImg,
+            text = "remove map",
+            fontSize = properties.mapRowOptionsFontSize,
+            font = "arial",
+            callback = function(event)
+                removeMap(row.index)
+            end,
+            takeFocus = true,
+            dimColor = properties.rowButtonUnclickColor,
+            undimColor = properties.rowButtonClickColor
+        }
 
         renameButton, removeButton = button.new(renameButtonParams), button.new(removeButtonParams)
 
@@ -97,9 +121,7 @@ function scene:create(event)
     end
 
     local function onRowTouch(event)
-        --TODO:goto mapScene with object map to show
         if event.phase == "release" then
-
             print("release " .. maps[event.row.index])
             local options = properties.sceneChangeOptions
 

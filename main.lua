@@ -1,5 +1,7 @@
 local composer = require("composer")
 local properties = require("properties")
+require("dev.log")
+
 print("isDevice " .. tostring(properties.isDevice))
 
 local backButtonEnabled = true
