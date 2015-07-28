@@ -125,6 +125,8 @@ function scene:hide(event)
     end
 end
 
+--TODO: hide keyboard on complete/cancel
+--TODO:set initial focus on text field
 
 -- "scene:destroy()"
 function scene:destroy(event)
