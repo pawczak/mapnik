@@ -10,12 +10,17 @@ local function quitScene()
     composer.hideOverlay("fade", 500)
 end
 
-local function removeMap(fileName)
-    print("removing " .. fileName)
+local function renameMap(fileName, newFileName)
+    print("renaming map " .. fileName .. " " .. " to " .. newFileName)
     if properties.isDevice then
-        --TODO:remove map from device
+        local destDir = system.TemporaryDirectory
+        print(tostring(system.pathForFile(properties.mapTempFileName, destDir)))
+        local results, reason = os.rename(system.pathForFile(properties.mapTempFileName, destDir),
+            system.pathForFile(newFileName, destDir))
+        print("reson" .. tostring(reason))
+        print("result" .. tostring(results))
     else
-        print("!!!!!!!!!!!!!!!!! You cannot remove map from simulator !!!!!!!!!!!!!!!!!!!!!")
+        print("!!!!!!!!!!!!!!!!! You cannot rename map from simulator !!!!!!!!!!!!!!!!!!!!!")
         quitScene()
     end
 end
@@ -36,9 +41,14 @@ function scene:create(event)
     sceneGroup:insert(contentBg)
     contentBg.x, contentBg.y = properties.center.x, properties.center.y
 
-    local removeText = display.newText("Remove " .. fileName .. "?", contentBg.x, contentBg.y - contentBg.contentHeight * 0.25, "arial", 20)
-    removeText:setFillColor(1, 1, 1)
-    sceneGroup:insert(removeText)
+    local renameText = display.newText("Rename " .. fileName, contentBg.x, contentBg.y - contentBg.contentHeight * 0.25, "arial", 20)
+    renameText:setFillColor(1, 1, 1)
+    sceneGroup:insert(renameText)
+
+    local renameField = native.newTextField(properties.center.x, properties.center.y, contentBg.contentWidth * 0.9, contentBg.contentHeight * 0.2)
+    sceneGroup:insert(renameField)
+    local function renameListener() end
+    renameField:addEventListener("userInput", renameListener)
 
     local yesButton, noButton, yesImg, noImg
     yesImg = display.newRect(0, 0, contentBg.contentWidth * 0.25, contentBg.contentHeight * 0.2)
@@ -46,11 +56,11 @@ function scene:create(event)
 
     local yesParams = {
         img = yesImg,
-        text = "Yes",
+        text = "Rename",
         fontSize = properties.mapRowOptionsFontSize,
         font = "arial",
         callback = function(event)
-            removeMap(fileName)
+            renameMap(fileName, renameField.text)
         end,
         takeFocus = true,
         dimColor = properties.removeMapUnclickColor,

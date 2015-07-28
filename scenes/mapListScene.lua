@@ -66,6 +66,18 @@ function scene:create(event)
     local function renameMap(mapIndex)
         print("rename")
         log.table(maps[mapIndex])
+
+
+        local options = {
+            isModal = true,
+            effect = "fade",
+            time = 500,
+            params = {
+                mapFileName = maps[mapIndex]
+            }
+        }
+
+        composer.showOverlay("scenes.renameMapScene", options)
     end
 
 
