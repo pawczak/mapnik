@@ -1,4 +1,13 @@
+local properties = require("properties")
+
 local button = {}
+
+local buttonEnabled = true
+
+button.toggle = function(event)
+    buttonEnabled = event.value
+end
+Runtime:addEventListener(properties.eventTypeToggleButton, button.toggle)
 
 button.new = function(params)
     local buttonGroup = display.newGroup()
@@ -14,7 +23,7 @@ button.new = function(params)
     end
 
     if params.undimColor then
-        buttonBg:setFillColor(params.undimColor[1],params.undimColor[2],params.undimColor[3],params.undimColor[4])
+        buttonBg:setFillColor(params.undimColor[1], params.undimColor[2], params.undimColor[3], params.undimColor[4])
     end
 
     if params.text then
@@ -23,13 +32,17 @@ button.new = function(params)
     end
 
     local function buttonTouched(event)
+        if not buttonEnabled then
+            print("toggle button disabled")
+            return
+        end
         if event.phase == "began" then
             if takeFocus then
                 display.getCurrentStage():setFocus(event.target)
                 buttonGroup.touchInitX, buttonGroup.touchInitY = event.x, event.y
 
                 if params.dimColor then
-                    buttonBg:setFillColor(params.dimColor[1],params.dimColor[2],params.dimColor[3],params.dimColor[4])
+                    buttonBg:setFillColor(params.dimColor[1], params.dimColor[2], params.dimColor[3], params.dimColor[4])
                 end
 
                 return true
@@ -41,7 +54,7 @@ button.new = function(params)
             end
         elseif event.phase == "ended" then
             if params.undimColor then
-                buttonBg:setFillColor(params.undimColor[1],params.undimColor[2],params.undimColor[3],params.undimColor[4])
+                buttonBg:setFillColor(params.undimColor[1], params.undimColor[2], params.undimColor[3], params.undimColor[4])
             end
             callback(event)
             display.getCurrentStage():setFocus(nil)
@@ -50,6 +63,10 @@ button.new = function(params)
 
     buttonGroup:addEventListener("touch", buttonTouched)
 
+    function buttonGroup:finalize(event)
+    end
+
+    buttonGroup:addEventListener("finalize")
 
     return buttonGroup
 end

@@ -10,7 +10,7 @@ local buttons = {}
 
 local function onChoosenMapClick(event)
     if event.phase == "ended" then
-        Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton })
+        Runtime:dispatchEvent({ name = properties.eventTypeToggleButton })
         composer.gotoScene("scenes.mapListScene", properties.sceneChangeOptions)
         Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapListSceneName })
     end
@@ -115,7 +115,7 @@ function scene:show(event)
         -- Called when the scene is still off screen (but is about to come on screen).
 
     elseif (phase == "did") then
-        Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton, value = true })
+        Runtime:dispatchEvent({ name = properties.eventTypeToggleButton, value = true })
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.

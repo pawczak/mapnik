@@ -20,7 +20,7 @@ properties.mainSceneBtnDistance = properties.height * 0.1
 
 --events
 --backbutton
-properties.eventTypeToggleBackButton = "eventTypeToggleBackButton"
+properties.eventTypeToggleButton = "eventTypeToggleButton"
 properties.eventTypeCopyMap = "eventTypeCopyMap"
 --scene events
 properties.eventTypeAddScene = "eventTypeAddScene"
@@ -46,6 +46,12 @@ properties.sceneChangeOptions = { effect = "crossFade", time = properties.sceneC
 properties.mapRowOptionsFontSize = 15
 properties.rowButtonClickColor = { 0.1, 0.3, 0.5, 0.9 }
 properties.rowButtonUnclickColor = { 0.3, 0.7, 0.5, 0.9 }
+
+properties.removeMapClickColor = { 0.9, 0.9, 1, 1 }
+properties.removeMapUnclickColor = { 0.1, 0.1, 0.1 }
+
+--overlay options
+
 
 --file system
 return properties

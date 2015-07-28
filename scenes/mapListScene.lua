@@ -50,6 +50,17 @@ function scene:create(event)
     local function removeMap(mapIndex)
         print("remove")
         log.table(maps[mapIndex])
+
+        local options = {
+            isModal = true,
+            effect = "fade",
+            time = 500,
+            params = {
+                mapFileName = maps[mapIndex]
+            }
+        }
+
+        composer.showOverlay("scenes.removeMapScene", options)
     end
 
     local function renameMap(mapIndex)
@@ -127,7 +138,7 @@ function scene:create(event)
 
             options.params = { mapFileName = maps[event.row.index] }
 
-            Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton })
+            Runtime:dispatchEvent({ name = properties.eventTypeToggleButton })
             composer.gotoScene("scenes.mapScene", options)
             Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapSceneName })
         end
@@ -166,7 +177,7 @@ function scene:show(event)
     if (phase == "will") then
         -- Called when the scene is still off screen (but is about to come on screen).
     elseif (phase == "did") then
-        Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton, value = true })
+        Runtime:dispatchEvent({ name = properties.eventTypeToggleButton, value = true })
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.

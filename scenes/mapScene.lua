@@ -366,7 +366,7 @@ function scene:show(event)
         createMapObj(fileName)
         print("WILL" .. "aaa")
     elseif (phase == "did") then
-        Runtime:dispatchEvent({ name = properties.eventTypeToggleBackButton, value = true })
+        Runtime:dispatchEvent({ name = properties.eventTypeToggleButton, value = true })
         -- Called when the scene is still off screen (but is about to come on screen).
 
         -- Called when the scene is now on screen.
