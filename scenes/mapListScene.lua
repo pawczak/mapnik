@@ -2,6 +2,7 @@ local composer = require("composer")
 local properties = require("properties")
 local lfs = require("lfs")
 local widget = require("widget")
+local button = require("widget.button")
 
 local scene = composer.newScene()
 
@@ -46,6 +47,14 @@ function scene:create(event)
         end
     end
 
+    local function removeMap(event)
+        print("rename")
+    end
+
+    local function renameMap(event)
+
+        print("remove")
+    end
 
     local function onRowRender(event)
 
@@ -63,6 +72,31 @@ function scene:create(event)
         rowTitle.anchorX = 0
         rowTitle.x = 0
         rowTitle.y = rowHeight * 0.5
+
+        local optionsGroup = display.newGroup()
+        row:insert(optionsGroup)
+
+        local renameButton, removeButton
+        local renameImg, removeImg = display.newRect(0, 0, rowWidth * 0.25, rowHeight), display.newRect(0, 0, rowWidth * 0.25, rowHeight)
+        renameImg:setFillColor(0.1, 0.3, 0.5, 0.9)
+        removeImg:setFillColor(0.1, 0.3, 0.5, 0.9)
+
+        local renameButtonParams = { img = renameImg, text = "rename map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = renameMap, takeFocus = true }
+        local removeButtonParams = { img = removeImg, text = "remove map", fontSize = properties.mapRowOptionsFontSize, font = "arial", callback = removeMap, takeFocus = true }
+
+        renameButton, removeButton = button.new(renameButtonParams), button.new(removeButtonParams)
+
+        optionsGroup:insert(renameButton)
+
+        renameButton.x = renameButton.contentWidth * 0.5
+
+        optionsGroup:insert(removeButton)
+
+        removeButton.x = renameButton.x + removeButton.contentWidth * 0.5 + removeButton.contentWidth * 0.5
+
+        optionsGroup.x = rowWidth - optionsGroup.contentWidth
+        optionsGroup.y = optionsGroup.contentHeight * 0.5
+
     end
 
     local function onRowTouch(event)
@@ -85,8 +119,8 @@ function scene:create(event)
         {
             left = properties.x,
             top = properties.y + listLabel.contentHeight,
-            height = properties.contentWidth,
-            width = properties.contentHeight,
+            height = properties.height - listLabel.contentHeight,
+            width = properties.contentWidth,
             onRowRender = onRowRender,
             onRowTouch = onRowTouch,
             listener = scrollListener
@@ -98,6 +132,7 @@ function scene:create(event)
         -- Insert a row into the tableView
         tableView:insertRow({ mapImg = maps[i] })
     end
+
     -- Initialize the scene here.
     -- Example: add display objects to "sceneGroup", add touch listeners, etc.
 end

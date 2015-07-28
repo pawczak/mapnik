@@ -41,5 +41,8 @@ end
 
 properties.sceneChangeTime = 1000
 properties.sceneChangeOptions = { effect = "crossFade", time = properties.sceneChangeTime }
+
+--maplist
+properties.mapRowOptionsFontSize = 15
 --file system
 return properties
