@@ -8,6 +8,8 @@ local scene = composer.newScene()
 
 local maps = {}
 
+local updateMapList, tableView
+
 -- -----------------------------------------------------------------------------------------------------------------
 -- All code outside of the listener functions will only be executed ONCE unless "composer.removeScene()" is called.
 -- -----------------------------------------------------------------------------------------------------------------
@@ -16,6 +18,29 @@ local maps = {}
 
 -- -------------------------------------------------------------------------------
 
+local function loadMapFiles()
+    local destDirt
+
+    local doc_path
+    if properties.isDevice then
+        doc_path = system.pathForFile(nil, properties.mapListBaseDir)
+    else
+        doc_path = system.pathForFile("mapy/", properties.mapListBaseDir)
+    end
+
+    if maps and #maps > 0 then
+        maps = nil
+        maps = {}
+    end
+
+    for file in lfs.dir(doc_path) do
+        -- file is the current file or directory name
+        print("Found file: " .. file)
+        if file ~= "." and file ~= ".." then
+            table.insert(maps, file)
+        end
+    end
+end
 
 -- "scene:create()"
 function scene:create(event)
@@ -30,22 +55,8 @@ function scene:create(event)
     listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
 
     print("mapDir", properties.mapDir)
-    local destDirt
 
-    local doc_path
-    if properties.isDevice then
-        doc_path = system.pathForFile(nil, properties.mapListBaseDir)
-    else
-        doc_path = system.pathForFile("mapy/", properties.mapListBaseDir)
-    end
-
-    for file in lfs.dir(doc_path) do
-        -- file is the current file or directory name
-        print("Found file: " .. file)
-        if file ~= "." and file ~= ".." then
-            table.insert(maps, file)
-        end
-    end
+    loadMapFiles()
 
     local function removeMap(mapIndex)
         print("remove")
@@ -80,6 +91,16 @@ function scene:create(event)
         composer.showOverlay("scenes.renameMapScene", options)
     end
 
+    updateMapList = function()
+        tableView:deleteAllRows()
+        loadMapFiles()
+        for i = 1, #maps do
+            -- Insert a row into the tableView
+            tableView:insertRow({ mapImg = maps[i] })
+        end
+    end
+
+    Runtime:addEventListener(properties.eventTypeUpdateMapList, updateMapList)
 
     local function onRowRender(event)
 
@@ -157,7 +178,7 @@ function scene:create(event)
     end
 
     -- Create the widget
-    local tableView = widget.newTableView
+    tableView = widget.newTableView
         {
             left = properties.x,
             top = properties.y + listLabel.contentHeight,
@@ -217,7 +238,7 @@ end
 function scene:destroy(event)
 
     local sceneGroup = self.view
-
+    Runtime:removeEventListener(properties.eventTypeUpdateMapList, updateMapList)
     -- Called prior to the removal of scene's view ("sceneGroup").
     -- Insert code here to clean up the scene.
     -- Example: remove display objects, save state, etc.

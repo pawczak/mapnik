@@ -15,10 +15,12 @@ local function renameMap(fileName, newFileName)
     if properties.isDevice then
         local destDir = system.TemporaryDirectory
         print(tostring(system.pathForFile(properties.mapTempFileName, destDir)))
-        local results, reason = os.rename(system.pathForFile(properties.mapTempFileName, destDir),
+        local results, reason = os.rename(system.pathForFile(fileName, destDir),
             system.pathForFile(newFileName, destDir))
         print("reson" .. tostring(reason))
         print("result" .. tostring(results))
+        Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList })
+        quitScene()
     else
         print("!!!!!!!!!!!!!!!!! You cannot rename map from simulator !!!!!!!!!!!!!!!!!!!!!")
         quitScene()
@@ -48,6 +50,7 @@ function scene:create(event)
     local renameField = native.newTextField(properties.center.x, properties.center.y, contentBg.contentWidth * 0.9, contentBg.contentHeight * 0.2)
     sceneGroup:insert(renameField)
     local function renameListener() end
+
     renameField:addEventListener("userInput", renameListener)
 
     local yesButton, noButton, yesImg, noImg

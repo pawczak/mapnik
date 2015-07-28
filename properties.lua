@@ -49,6 +49,7 @@ properties.rowButtonUnclickColor = { 0.3, 0.7, 0.5, 0.9 }
 
 properties.removeMapClickColor = { 0.9, 0.9, 1, 1 }
 properties.removeMapUnclickColor = { 0.1, 0.1, 0.1 }
+properties.eventTypeUpdateMapList = "eventTypeUpdateMapList"
 
 --overlay options
 

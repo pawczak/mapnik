@@ -14,6 +14,10 @@ local function removeMap(fileName)
     print("removing " .. fileName)
     if properties.isDevice then
         --TODO:remove map from device
+        local destDir = system.TemporaryDirectory
+        local result, reason = os.remove(system.pathForFile(fileName, destDir))
+        Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList })
+        quitScene()
     else
         print("!!!!!!!!!!!!!!!!! You cannot remove map from simulator !!!!!!!!!!!!!!!!!!!!!")
         quitScene()
