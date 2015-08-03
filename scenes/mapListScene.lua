@@ -84,6 +84,8 @@ function scene:create(event)
     searchTextBox.y = listLabelRect.contentHeight * 0.25
     searchTextBox:addEventListener("userInput", renameListener)
 
+    --TODO: add 'X' clean button for searchedText
+
     print("mapDir", properties.mapDir)
 
     loadMapFiles()
