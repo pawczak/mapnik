@@ -84,7 +84,27 @@ function scene:create(event)
     searchTextBox.y = listLabelRect.contentHeight * 0.25
     searchTextBox:addEventListener("userInput", renameListener)
 
-    --TODO: add 'X' clean button for searchedText
+    local function cleanSearchText()
+        searchTextBox.text = ""
+        renameListener({ text = "" })
+    end
+
+    local xRect = display.newRect(0, 0, 50, 50)
+    local cleanButtonParams = {
+        img = xRect,
+        text = "X",
+        fontSize = properties.mapRowOptionsFontSize,
+        font = "arial",
+        callback = function(event)
+            cleanSearchText()
+        end,
+        takeFocus = true,
+        dimColor = properties.rowButtonUnclickColor,
+        undimColor = properties.rowButtonClickColor
+    }
+    local cleanButton = button.new(cleanButtonParams)
+    listLabel:insert(cleanButton)
+    cleanButton.x, cleanButton.y = searchTextBox.x + searchTextBox.contentWidth * 0.5 + cleanButton.contentWidth * 0.5 + 15, searchTextBox.y
 
     print("mapDir", properties.mapDir)
 
@@ -205,7 +225,6 @@ function scene:create(event)
 
             Runtime:dispatchEvent({ name = properties.eventTypeToggleButton })
             composer.gotoScene("scenes.mapScene", options)
-            Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapSceneName })
         end
     end
 
@@ -270,6 +289,8 @@ end
 function scene:destroy(event)
 
     local sceneGroup = self.view
+--    sceneGroup:removeSelf(); sceneGroup = nil
+
     Runtime:removeEventListener(properties.eventTypeUpdateMapList, updateMapList)
     -- Called prior to the removal of scene's view ("sceneGroup").
     -- Insert code here to clean up the scene.

@@ -23,6 +23,7 @@ properties.mainSceneBtnDistance = properties.height * 0.1
 properties.eventTypeToggleButton = "eventTypeToggleButton"
 properties.eventTypeCopyMap = "eventTypeCopyMap"
 --scene events
+properties.eventTypeRemovePreviousScene = "eventTypeRemovePreviousScene"
 properties.eventTypeAddScene = "eventTypeAddScene"
 properties.eventTypeResetSceneStack = "eventTypeResetSceneStack"
 --scene names
@@ -50,8 +51,8 @@ properties.rowButtonUnclickColor = { 0.3, 0.7, 0.5, 0.9 }
 properties.removeMapClickColor = { 0.9, 0.9, 1, 1 }
 properties.removeMapUnclickColor = { 0.1, 0.1, 0.1 }
 properties.eventTypeUpdateMapList = "eventTypeUpdateMapList"
-
 --overlay options
+
 
 
 --file system

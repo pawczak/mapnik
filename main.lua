@@ -17,6 +17,9 @@ Runtime:addEventListener(properties.eventTypeToggleButton, toggleBackButton)
 local function addScene(event)
     print('add scene ' .. event.sceneName)
     sceneStack[#sceneStack + 1] = event.sceneName
+    if event and event.removeLastScene and #sceneStack > 1 then
+        composer.removeScene(sceneStack[#sceneStack - 1])
+    end
 end
 
 Runtime:addEventListener(properties.eventTypeAddScene, addScene)
@@ -31,6 +34,7 @@ end
 Runtime:addEventListener(properties.eventTypeResetSceneStack, resetSceneStack)
 
 local function backButton(event)
+    print("backButtonEnabled")
     if not backButtonEnabled then return true end
     local message = "Key '" .. event.keyName .. "' was pressed " .. event.phase
     print(properties.isDevice)
@@ -54,7 +58,6 @@ local function backButton(event)
 end
 
 Runtime:addEventListener("key", backButton)
-
 
 local function startApp()
     Runtime:dispatchEvent({ name = properties.eventTypeToggleButton })

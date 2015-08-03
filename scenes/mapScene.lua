@@ -363,9 +363,12 @@ function scene:show(event)
     local phase = event.phase
 
     if (phase == "will") then
+
         createMapObj(fileName)
         print("WILL" .. "aaa")
     elseif (phase == "did") then
+        Runtime:dispatchEvent({ name = properties.eventTypeAddScene, sceneName = properties.mapSceneName, removeLastScene = true })
+        --        composer.removeScene(curScene)
         Runtime:dispatchEvent({ name = properties.eventTypeToggleButton, value = true })
         -- Called when the scene is still off screen (but is about to come on screen).
 
