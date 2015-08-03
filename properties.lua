@@ -12,7 +12,7 @@ properties.center = { x = display.actualContentWidth * 0.5, y = display.actualCo
 properties.mainButtonWidth = properties.width * 0.7
 properties.mainButtonHeight = properties.height * 0.2
 
-properties.labelHeight = 100
+properties.labelHeight = 200
 
 properties.mapTempFileName = "mapTempFileName"
 --design

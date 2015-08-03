@@ -42,6 +42,23 @@ local function loadMapFiles()
     end
 end
 
+local function renameListener(event)
+    local newMapSearchTab = {}
+    if event and event.text then
+        if event.text == "" then
+            Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList })
+            return
+        else
+            for i = 1, #maps do
+                if string.find(maps[i], event.text) then
+                    table.insert(newMapSearchTab, maps[i])
+                end
+            end
+            Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList, searchMapTab = newMapSearchTab })
+        end
+    end
+end
+
 -- "scene:create()"
 function scene:create(event)
 
@@ -52,7 +69,18 @@ function scene:create(event)
     listLabelRect:setFillColor(0.1, 0.3, 0.5, 0.9)
     sceneGroup:insert(listLabel)
 
-    listLabel.x, listLabel.y = properties.width * 0.5, listLabel.contentHeight * 0.5
+    listLabel.x, listLabel.y = properties.width * 0.5, listLabelRect.contentHeight * 0.25
+
+    local searchLabel = display.newText(listLabel, "search: ", 0, 0, "arial")
+    local searchTextBox = native.newTextField(properties.center.x, properties.center.y, listLabelRect.contentWidth * 0.5, properties.labelHeight * 0.2)
+
+    listLabel:insert(searchLabel)
+    listLabel:insert(searchTextBox)
+    searchLabel.x = -listLabel.contentWidth * 0.5 + searchLabel.contentWidth + 25
+    searchLabel.y = listLabelRect.contentHeight * 0.25
+    searchTextBox.x = listLabel.contentWidth * 0.5 - searchTextBox.contentWidth - 25
+    searchTextBox.y = listLabelRect.contentHeight * 0.25
+    searchTextBox:addEventListener("userInput", renameListener)
 
     print("mapDir", properties.mapDir)
 
@@ -91,12 +119,18 @@ function scene:create(event)
         composer.showOverlay("scenes.renameMapScene", options)
     end
 
-    updateMapList = function()
+    updateMapList = function(event)
         tableView:deleteAllRows()
         loadMapFiles()
-        for i = 1, #maps do
+        local mapsToInsert
+        if event and event.searchMapTab then
+            mapsToInsert = event.searchMapTab
+        else
+            mapsToInsert = maps
+        end
+        for i = 1, #mapsToInsert do
             -- Insert a row into the tableView
-            tableView:insertRow({ mapImg = maps[i] })
+            tableView:insertRow({ mapImg = mapsToInsert[i] })
         end
     end
 
@@ -181,8 +215,8 @@ function scene:create(event)
     tableView = widget.newTableView
         {
             left = properties.x,
-            top = properties.y + listLabel.contentHeight,
-            height = properties.height - listLabel.contentHeight,
+            top = properties.y + listLabelRect.contentHeight,
+            height = properties.height - listLabelRect.contentHeight,
             width = properties.contentWidth,
             onRowRender = onRowRender,
             onRowTouch = onRowTouch,
