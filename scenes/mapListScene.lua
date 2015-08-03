@@ -46,6 +46,7 @@ local function renameListener(event)
     local newMapSearchTab = {}
     if event and event.text then
         if event.text == "" then
+            loadMapFiles()
             Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList })
             return
         else
@@ -54,7 +55,8 @@ local function renameListener(event)
                     table.insert(newMapSearchTab, maps[i])
                 end
             end
-            Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList, searchMapTab = newMapSearchTab })
+            maps = newMapSearchTab
+            Runtime:dispatchEvent({ name = properties.eventTypeUpdateMapList })
         end
     end
 end
@@ -121,16 +123,10 @@ function scene:create(event)
 
     updateMapList = function(event)
         tableView:deleteAllRows()
-        loadMapFiles()
-        local mapsToInsert
-        if event and event.searchMapTab then
-            mapsToInsert = event.searchMapTab
-        else
-            mapsToInsert = maps
-        end
-        for i = 1, #mapsToInsert do
+
+        for i = 1, #maps do
             -- Insert a row into the tableView
-            tableView:insertRow({ mapImg = mapsToInsert[i] })
+            tableView:insertRow({ mapImg = maps[i] })
         end
     end
 
